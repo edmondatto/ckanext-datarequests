@@ -26,6 +26,7 @@ from sqlalchemy.sql.expression import or_
 
 DataRequest = None
 Comment = None
+Vote = None
 
 
 def uuid4():
@@ -36,6 +37,7 @@ def init_db(model):
 
     global DataRequest
     global Comment
+    global Vote
 
     if DataRequest is None:
 
@@ -165,3 +167,9 @@ def init_db(model):
             sa.Column('user_id', sa.types.UnicodeText, primary_key=False, default=u''),
             sa.Column('datarequest_id', sa.types.UnicodeText, primary_key=True, default=uuid4),
             sa.Column('votes', sa.types.UnicodeText, primary_key=False, default=u'')
+            )
+
+        # Create the table only if it does not exist
+        votes_table.create(checkfirst=True)
+
+        model.meta.mapper(Vote, votes_table,)
