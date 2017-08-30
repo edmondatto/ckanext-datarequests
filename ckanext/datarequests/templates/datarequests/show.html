@@ -65,19 +65,20 @@
     {% snippet "datarequests/snippets/additional_info.html", datarequest=c.datarequest %}
   {% endblock %}
 
-  <div class="vote-section" style="padding:5px;">
+  <div class="vote-section">
     <hr>
-    <span class= "vote-section-content">
-      <p> 1 </p>
+    <span class= "vote-section-content" id="down_votes_count">
+      <p> 1890 </p>
     </span>
-    <span class="vote-section-content">
-      <i class= "fa fa-thumbs-o-down fa-lg fa-flip-horizontal"></i>
+    <span class="vote-section-content down_vote">
+      <i class= "fa fa-thumbs-o-down fa-lg fa-flip-horizontal" title="Down vote request" id="down" onclick="down_vote()"></i>
+      <abbr title="Down Vote"></abbr>
     </span>
-    <span class="vote-section-content">
-      <p> 1 </p>
+    <span class="vote-section-content" id="up_votes_count">
+      <p> 145 </p>
     </span>
-    <span class= "vote-section-content">
-      <i class= "fa fa-thumbs-o-up fa-lg icon-border"></i>
+    <span class= "vote-section-content up_vote">
+      <i class= "fa fa-thumbs-o-up fa-lg icon-border" title="Up vote request" id="up" onclick="up_vote()"></i>
     </span>
   </div>
 {% endblock %}
