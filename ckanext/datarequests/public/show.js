@@ -9,11 +9,11 @@ $(document).ready(function() {
     $('#thumbs_up').toggleClass('fa-thumbs-up fa-thumbs-o-up');
     
     if (up_voted) {
-      $('#thumbs_down').addClass('disabled');
+      $('.down_vote').addClass('disabled');
       up_vote_counter ++;
       $("#up_votes_count").text(up_vote_counter);
     } else {
-      $('#thumbs_down').removeClass('disabled');
+      $('.down_vote').removeClass('disabled');
       up_vote_counter --;
       $("#up_votes_count").text(up_vote_counter);
     }
@@ -24,11 +24,11 @@ $(document).ready(function() {
     $('#thumbs_down').toggleClass('fa-thumbs-down fa-thumbs-o-down');
     
     if (down_voted) {
-      $('#thumbs_up').addClass('disabled');
+      $('.up_vote').addClass('disabled');
       down_vote_counter ++;
       $("#down_votes_count").text(down_vote_counter);
     } else {
-      $('#thumbs_up').removeClass('disabled');
+      $('.up_vote').removeClass('disabled');
       down_vote_counter --;
       $("#down_votes_count").text(down_vote_counter);
     }
