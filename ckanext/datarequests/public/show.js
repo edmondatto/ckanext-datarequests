@@ -1,25 +1,32 @@
 var up_voted = false;
 var down_voted = false;
 
-function up_vote() {
-  up_voted = !up_voted;
-  $('#up').toggleClass('fa-thumbs-up fa-thumbs-o-up');
-  
-  if(up_voted){
-    $('#down').addClass('disabled');
-  } else {
-    $('#down').removeClass('disabled');
-  }
-}
+// initialize upvote and downvote counter
 
-function down_vote() {
-  down_voted = !down_voted;
-  $('#down').toggleClass('fa-thumbs-down fa-thumbs-o-down');
+$(document).ready(function() {
   
-  if(down_voted){
-    $('#up').addClass('disabled');
-  } else {
-    $('#up').removeClass('disabled');
-  }
-}
-
+  $("#thumbs_up").click(function () {
+    up_voted = !up_voted;
+    $('#thumbs_up').toggleClass('fa-thumbs-up fa-thumbs-o-up');
+    
+    // insert code for calculating new upvote counter
+    
+    if (up_voted) {
+      $('#thumbs_down').addClass('disabled');
+    } else {
+      $('#thumbs_down').removeClass('disabled');
+    }
+  });
+  
+  $("#thumbs_down").click(function () {
+    down_voted = !down_voted;
+    $('#thumbs_down').toggleClass('fa-thumbs-down fa-thumbs-o-down');
+    
+    // insert code for calculating new down vote counter
+    if (up_voted) {
+      $('#thumbs_up').addClass('disabled');
+    } else {
+      $('#thumbs_up').removeClass('disabled');
+    }
+  });
+});
