@@ -119,6 +119,22 @@ def _undictize_comment_basic(comment, data_dict):
     comment.datarequest_id = data_dict.get('datarequest_id', '')
 
 
+def _dictize_vote(vote):
+
+    return {
+        'id': vote.id,
+        'datarequest_id': vote.datarequest_id,
+        'user_id': vote.user_id,
+        'vote': vote.vote,
+        'user': _get_user(vote.user_id)
+    }
+
+
+def _undictize_vote_basic(vote, data_dict):
+    vote.vote = data_dict.get('vote', '')
+    vote.datarequest_id = data_dict.get('datarequest_id', '')
+
+
 def datarequest_create(context, data_dict):
     '''
     Action to create a new data request. The function checks the access rights
@@ -733,3 +749,47 @@ def datarequest_comment_delete(context, data_dict):
     session.commit()
 
     return _dictize_comment(comment)
+
+    def datarequest_vote(context, data_dict):
+        '''
+        Action to upvote/downvote a particular data request.
+        Access rights will be checked before voting and a NotAuthorized
+        exception will be risen if the user is not allowed to upvote/downvote.
+
+        :param datarequest_id: The ID of the datarequest to be upvoted/downvoted
+        :type id: string
+
+        :param vote: The rating to be added to the data request
+        :type vote: string
+
+        :returns: A dict with the data request vote (id, user_id, datarequest_id,
+           vote)
+        :rtype: dict
+        '''
+
+        model = context['model']
+        session = context['session']
+        datarequest_id = data_dict.get('datarequest_id', '')
+
+        # Check id
+        if not datarequest_id:
+            raise tk.ValidationError([tk._('Data Request ID has not been included')])
+
+        # Init the data base
+        db.init_db(model)
+
+        # Check access
+        tk.check_access(constants.DATAREQUEST_VOTE, context, data_dict)
+
+        # Validate comment
+        validator.validate_vote(context, data_dict)
+
+        # Store the data
+        vote = db.Vote()
+        _undictize_vote_basic(vote, data_dict)
+        vote.user_id = context['auth_user_obj'].id
+
+        session.add(vote)
+        session.commit()
+
+        return _dictize_vote(vote)
