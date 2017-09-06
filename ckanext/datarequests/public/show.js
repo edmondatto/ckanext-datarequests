@@ -1,22 +1,21 @@
 var up_voted = false;
 var down_voted = false;
-var up_vote_counter = JSON.parse($("#up_votes_count").data("up_counter"));
-var down_vote_counter = JSON.parse($("#down_votes_count").data("down_counter"));
-
-// initialize upvote and downvote counter
 
 $(document).ready(function() {
-  console.log(up_vote_counter, down_vote_counter);
+  var up_vote_counter = $("#up_votes_count").text();
+  var down_vote_counter = $("#down_votes_count").text();
   $("#thumbs_up").click(function () {
     up_voted = !up_voted;
     $('#thumbs_up').toggleClass('fa-thumbs-up fa-thumbs-o-up');
     
-    // insert code for calculating new upvote counter
-    
     if (up_voted) {
-      $('#thumbs_down').addClass('disabled');
+      $('.down_vote').addClass('disabled');
+      up_vote_counter ++;
+      $("#up_votes_count").text(up_vote_counter);
     } else {
-      $('#thumbs_down').removeClass('disabled');
+      $('.down_vote').removeClass('disabled');
+      up_vote_counter --;
+      $("#up_votes_count").text(up_vote_counter);
     }
   });
   
@@ -24,11 +23,14 @@ $(document).ready(function() {
     down_voted = !down_voted;
     $('#thumbs_down').toggleClass('fa-thumbs-down fa-thumbs-o-down');
     
-    // insert code for calculating new down vote counter
     if (down_voted) {
-      $('#thumbs_up').addClass('disabled');
+      $('.up_vote').addClass('disabled');
+      down_vote_counter ++;
+      $("#down_votes_count").text(down_vote_counter);
     } else {
-      $('#thumbs_up').removeClass('disabled');
+      $('.up_vote').removeClass('disabled');
+      down_vote_counter --;
+      $("#down_votes_count").text(down_vote_counter);
     }
   });
 });
