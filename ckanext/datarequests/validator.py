@@ -84,6 +84,26 @@ def validate_comment(context, request_data):
 def validate_vote(context, request_data):
     # Check if data request exists
     try:
-        tk.get_action(constants.DATAREQUEST_SHOW)(context, {'id': request_data['datarequest_id']})
+        tk.get_action(constants.DATAREQUEST_SHOW)(context, {'id': request_data['id']})
+
     except Exception:
         raise tk.ValidationError({tk._('Data Request'): [tk._('Data Request not found')]})
+
+    # Check if user already voted on data request
+    result = db.Vote.get(datarequest_id=request_data['id'], user_id=context['auth_user_obj'].id)
+    if result:
+        raise tk.ValidationError({tk._('Data Request'): [tk._('You have already voted on this data request')]})
+
+
+def validate_unvote(context, request_data):
+    # Check if data request exists
+    try:
+        tk.get_action(constants.DATAREQUEST_SHOW)(context, {'id': request_data['id']})
+
+    except Exception:
+        raise tk.ValidationError({tk._('Data Request'): [tk._('Data Request not found')]})
+
+    # Check if user already voted on data request
+    result = db.Vote.get(datarequest_id=request_data['id'], user_id=context['auth_user_obj'].id)
+    if not result:
+        raise tk.ValidationError({tk._('Data Request'): [tk._('You have not voted on this data request')]})
