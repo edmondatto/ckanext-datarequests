@@ -165,8 +165,8 @@ def init_db(model):
         votes_table = sa.Table('datarequests_votes', model.meta.metadata,
             sa.Column('id', sa.types.UnicodeText, primary_key=True, default=uuid4),
             sa.Column('user_id', sa.types.UnicodeText, primary_key=False, default=u''),
-            sa.Column('datarequest_id', sa.types.UnicodeText, primary_key=True, default=uuid4),
-            sa.Column('vote', sa.types.Boolean, primary_key=False)
+            sa.Column('datarequest_id', sa.types.UnicodeText, primary_key=False, default=uuid4),
+            sa.Column('votes', sa.types.Boolean, primary_key=False)
             )
 
         # Create the table only if it does not exist
