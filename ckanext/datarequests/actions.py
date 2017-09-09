@@ -125,14 +125,14 @@ def _dictize_vote(vote):
         'id': vote.id,
         'datarequest_id': vote.datarequest_id,
         'user_id': vote.user_id,
-        'vote': vote.vote,
+        'vote': vote.votes,
         'user': _get_user(vote.user_id)
     }
 
 
 def _undictize_vote_basic(vote, data_dict):
-    vote.vote = data_dict.get('vote', '')
-    vote.datarequest_id = data_dict.get('datarequest_id', '')
+    vote.votes = data_dict.get('vote', '')
+    vote.datarequest_id = data_dict.get('id', '')
 
 
 def datarequest_create(context, data_dict):
@@ -220,6 +220,15 @@ def datarequest_show(context, data_dict):
 
     data_req = result[0]
     data_dict = _dictize_datarequest(data_req)
+
+    # Get the number of votes on the data request
+    vote_count = _get_vote_count(context, datarequest_id)
+    data_dict['upvotes'] = vote_count['upvotes']
+    data_dict['downvotes'] = vote_count['downvotes']
+
+    # Get the user's option
+    user_option = _get_user_vote(context, datarequest_id)
+    data_dict['user_option'] = user_option
 
     return data_dict
 
@@ -372,7 +381,7 @@ def datarequest_index(context, data_dict):
     datarequests = []
     offset = data_dict.get('offset', 0)
     limit = data_dict.get('limit', constants.DATAREQUESTS_PER_PAGE)
-    for data_req in db_datarequests[offset:offset + limit]:
+    for data_req in db_datarequests[offset:offset + limit]:     
         datarequests.append(_dictize_datarequest(data_req))
 
     # Facets
@@ -750,46 +759,148 @@ def datarequest_comment_delete(context, data_dict):
 
     return _dictize_comment(comment)
 
-    def datarequest_vote(context, data_dict):
-        '''
-        Action to upvote/downvote a particular data request.
-        Access rights will be checked before voting and a NotAuthorized
-        exception will be risen if the user is not allowed to upvote/downvote.
 
-        :param datarequest_id: The ID of the datarequest to be upvoted/downvoted
-        :type id: string
+def datarequest_vote(context, data_dict):
+    '''
+    Action to upvote/downvote a particular data request.
+    Access rights will be checked before voting and a NotAuthorized
+    exception will be risen if the user is not allowed to upvote/downvote.
 
-        :param vote: The rating to be added to the data request
-        :type vote: string
+    :param datarequest_id: The ID of the datarequest to be upvoted/downvoted
+    :type id: string
 
-        :returns: A dict with the data request vote (id, user_id, datarequest_id,
-           vote)
-        :rtype: dict
-        '''
+    :param vote: The rating to be added to the data request
+    :type vote: string
 
-        model = context['model']
-        session = context['session']
-        datarequest_id = data_dict.get('datarequest_id', '')
+    :returns: A dict with the data request vote (id, user_id, datarequest_id,
+        vote)
+    :rtype: dict
+    '''
 
-        # Check id
-        if not datarequest_id:
-            raise tk.ValidationError([tk._('Data Request ID has not been included')])
+    model = context['model']
+    session = context['session']
+    datarequest_id = data_dict.get('id', '')
 
-        # Init the data base
-        db.init_db(model)
+    # Check id
+    if not datarequest_id:
+        raise tk.ValidationError([tk._('Data Request ID has not been included')])
 
-        # Check access
-        tk.check_access(constants.DATAREQUEST_VOTE, context, data_dict)
+    # Init the data base
+    db.init_db(model)
 
-        # Validate comment
-        validator.validate_vote(context, data_dict)
+    # Check access
+    tk.check_access(constants.DATAREQUEST_SHOW, context, data_dict)
 
-        # Store the data
-        vote = db.Vote()
-        _undictize_vote_basic(vote, data_dict)
-        vote.user_id = context['auth_user_obj'].id
+    # Validate comment
+    validator.validate_vote(context, data_dict)
 
-        session.add(vote)
-        session.commit()
+    # Store the data
+    vote = db.Vote()
+    _undictize_vote_basic(vote, data_dict)
+    vote.user_id = context['auth_user_obj'].id
 
-        return _dictize_vote(vote)
+    session.add(vote)
+    session.commit()
+
+    return _dictize_vote(vote)
+
+
+def datarequest_unvote(context, data_dict):
+    '''
+    Action to retract a vote on a particular data request.
+    Access rights will be checked before voting and a NotAuthorized
+    exception will be risen if the user is not allowed to upvote/downvote.
+
+    :param datarequest_id: The ID of the datarequest to be upvoted/downvoted
+    :type id: string
+
+    :returns: A dict with the data request vote (id, user_id, datarequest_id,
+        vote)
+    :rtype: dict
+    '''
+
+    model = context['model']
+    session = context['session']
+    datarequest_id = data_dict.get('id', '')
+
+    # Check id
+    if not datarequest_id:
+        raise tk.ValidationError([tk._('Data Request ID has not been included')])
+
+    # Init the data base
+    db.init_db(model)
+
+    # Check access
+    tk.check_access(constants.DATAREQUEST_SHOW, context, data_dict)
+
+    # Validate comment
+    validator.validate_unvote(context, data_dict)
+
+    # Retrieve the vote associated with a particular user and remove it
+    result = db.Vote.get(datarequest_id=datarequest_id, user_id=context['auth_user_obj'].id)
+    if not result:
+        raise tk.ObjectNotFound(tk._('No vote found associated with the user'))
+
+    vote = result[0]
+
+    session.delete(vote)
+    session.commit()
+
+    return _dictize_vote(vote)
+
+
+def _get_vote_count(context, datarequest_id):
+    '''
+    Method to get the number of votes on a singe data request
+    '''
+    model = context['model']
+    upvotes = 0
+    downvotes = 0
+
+    db.init_db(model)
+
+    votes = db.Vote.get(datarequest_id=datarequest_id)
+    for vote in votes:
+        if vote.votes is True:
+            upvotes += 1
+        elif vote.votes is False:
+            downvotes += 1
+    
+    response = {
+        'datarequest_id': datarequest_id,
+        'upvotes': upvotes,
+        'downvotes': downvotes
+    }
+    return response
+
+
+def _get_user_vote(context, datarequest_id):
+    '''
+    Method to get a user's vote on a data request
+    Returns True if the user up voted the data request
+    Returns False if the user down voted the data request
+    Returns None if the user has not voted on the data request
+    '''
+    model = context['model']
+
+    try:
+        user_id = context['auth_user_obj'].id
+        if user_id:
+            db.init_db(model)
+
+            votes = db.Vote.get(datarequest_id=datarequest_id, user_id=user_id)
+            if len(votes) > 0:
+                user_vote = votes[0]
+
+                if user_vote.votes is True:
+                    return True
+                elif user_vote.votes is False:
+                    return False
+                else:
+                    return None
+            else:
+                return None
+        else:
+            return None
+    except AttributeError:
+        return None
