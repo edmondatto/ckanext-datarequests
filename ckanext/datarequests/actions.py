@@ -381,8 +381,15 @@ def datarequest_index(context, data_dict):
     datarequests = []
     offset = data_dict.get('offset', 0)
     limit = data_dict.get('limit', constants.DATAREQUESTS_PER_PAGE)
-    for data_req in db_datarequests[offset:offset + limit]:     
-        datarequests.append(_dictize_datarequest(data_req))
+    for data_req in db_datarequests[offset:offset + limit]:
+        data_req_dict = _dictize_datarequest(data_req)
+        
+        # Get the number of votes on the data request
+        vote_count = _get_vote_count(context, data_req.id)
+        data_req_dict['upvotes'] = vote_count['upvotes']
+        data_req_dict['downvotes'] = vote_count['downvotes']
+
+        datarequests.append(data_req_dict)
 
     # Facets
     no_processed_organization_facet = {}
