@@ -814,8 +814,8 @@ def datarequest_unvote(context, data_dict):
     :param datarequest_id: The ID of the datarequest to be upvoted/downvoted
     :type id: string
 
-    :returns: A dict with the data request vote (id, user_id, datarequest_id,
-        vote)
+    :returns: A dict with the data request vote that has just been retracted 
+        (id, user_id, datarequest_id, vote)
     :rtype: dict
     '''
 
@@ -851,7 +851,7 @@ def datarequest_unvote(context, data_dict):
 
 def _get_vote_count(context, datarequest_id):
     '''
-    Method to get the number of votes on a singe data request
+    Method to get the number of votes on a single data request
     '''
     model = context['model']
     upvotes = 0
@@ -879,7 +879,7 @@ def _get_user_vote(context, datarequest_id):
     Method to get a user's vote on a data request
     Returns True if the user up voted the data request
     Returns False if the user down voted the data request
-    Returns None if the user has not voted on the data request
+    Returns None if the user has not voted on the data request or if an error occured
     '''
     model = context['model']
 
