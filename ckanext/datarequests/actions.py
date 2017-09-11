@@ -125,13 +125,13 @@ def _dictize_vote(vote):
         'id': vote.id,
         'datarequest_id': vote.datarequest_id,
         'user_id': vote.user_id,
-        'vote': vote.votes,
+        'vote': vote.vote_option,
         'user': _get_user(vote.user_id)
     }
 
 
 def _undictize_vote_basic(vote, data_dict):
-    vote.votes = data_dict.get('vote', '')
+    vote.vote_option = data_dict.get('vote', '')
     vote.datarequest_id = data_dict.get('id', '')
 
 
@@ -868,9 +868,9 @@ def _get_vote_count(context, datarequest_id):
 
     votes = db.Vote.get(datarequest_id=datarequest_id)
     for vote in votes:
-        if vote.votes is True:
+        if vote.vote_option is True:
             upvotes += 1
-        elif vote.votes is False:
+        elif vote.vote_option is False:
             downvotes += 1
     
     response = {
@@ -899,9 +899,9 @@ def _get_user_vote(context, datarequest_id):
             if len(votes) > 0:
                 user_vote = votes[0]
 
-                if user_vote.votes is True:
+                if user_vote.vote_option is True:
                     return True
-                elif user_vote.votes is False:
+                elif user_vote.vote_option is False:
                     return False
                 else:
                     return None
