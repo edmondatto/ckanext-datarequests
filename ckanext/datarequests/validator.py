@@ -89,10 +89,14 @@ def validate_vote(context, request_data):
     except Exception:
         raise tk.ValidationError({tk._('Data Request'): [tk._('Data Request not found')]})
 
-    # Check if user already voted on data request
-    result = db.Vote.get(datarequest_id=request_data['id'], user_id=context['auth_user_obj'].id)
-    if result:
-        raise tk.ValidationError({tk._('Data Request'): [tk._('You have already voted on this data request')]})
+    try:
+        # Check if user already voted on data request
+        user_id = context['auth_user_obj'].id
+        result = db.Vote.get(datarequest_id=request_data['id'], user_id=user_id)
+        if result:
+            raise tk.ValidationError({tk._('Data Request'): [tk._('You have already voted on this data request')]})
+    except AttributeError:
+        raise tk.ValidationError({tk._('Data Request'): [tk._('You need to be logged in to complete this action')]})
 
 
 def validate_unvote(context, request_data):
@@ -103,7 +107,11 @@ def validate_unvote(context, request_data):
     except Exception:
         raise tk.ValidationError({tk._('Data Request'): [tk._('Data Request not found')]})
 
-    # Check if user already voted on data request
-    result = db.Vote.get(datarequest_id=request_data['id'], user_id=context['auth_user_obj'].id)
-    if not result:
-        raise tk.ValidationError({tk._('Data Request'): [tk._('You have not voted on this data request')]})
+    try:
+        # Check if user has voted on data request
+        user_id = context['auth_user_obj'].id
+        result = db.Vote.get(datarequest_id=request_data['id'], user_id=user_id)
+        if not result:
+            raise tk.ValidationError({tk._('Data Request'): [tk._('You have not voted on this data request')]})
+    except AttributeError:
+        raise tk.ValidationError({tk._('Data Request'): [tk._('You need to be logged in to complete this action')]})
