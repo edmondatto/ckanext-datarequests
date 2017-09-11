@@ -17,7 +17,7 @@ $(document).ready(function() {
       $.ajax({
         url: "/api/action/datarequest_vote",
         type: "post",
-        contentType: "application/json",
+        contentType: "application/json; charset=utf-8",
         data: JSON.stringify({
           "id": datarequest_id,
           "vote": "True"
@@ -43,7 +43,7 @@ $(document).ready(function() {
       $.ajax({
         url: "/api/action/datarequest_unvote",
         type: "post",
-        contentType: "application/json",
+        contentType: "application/json; charset=utf-8",
         data: JSON.stringify({
           "id": datarequest_id
         }),
@@ -76,7 +76,7 @@ $(document).ready(function() {
       $.ajax({
         url: "/api/action/datarequest_vote",
         type: "post",
-        contentType: "application/json",
+        contentType: "application/json; charset=utf-8",
         data: JSON.stringify({
           "id": datarequest_id,
           "vote": "False"
@@ -102,7 +102,7 @@ $(document).ready(function() {
       $.ajax({
         url: "/api/action/datarequest_unvote",
         type: "post",
-        contentType: "application/json",
+        contentType: "application/json; charset=utf-8",
         data: JSON.stringify({
           "id": datarequest_id
         }),
