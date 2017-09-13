@@ -1,6 +1,3 @@
-general:
-  build_dir: ckanext-datarequests
-
 ## Customize dependencies
 dependencies:
   pre:
