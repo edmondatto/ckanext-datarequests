@@ -2,7 +2,7 @@
 dependencies:
   pre:
     - pip install nose
-    - pip install pylons
+    - pip install pylons==0.9.7
 
 test:
   override:
