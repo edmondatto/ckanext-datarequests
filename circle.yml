@@ -4,7 +4,7 @@ general:
 ## Customize dependencies
 dependencies:
   pre:
-    - pip install nosetests
+    - pip install nose
 
 test:
   override:
