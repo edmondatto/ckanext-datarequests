@@ -1,0 +1,8 @@
+## Customize dependencies
+dependencies:
+  pre:
+    - pip install nosetests
+
+test:
+  post:
+    - python setup.py nosetests
