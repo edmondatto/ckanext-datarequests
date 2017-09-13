@@ -1,8 +1,11 @@
+general:
+  build_dir: ckanext-datarequests
+
 ## Customize dependencies
 dependencies:
   pre:
     - pip install nosetests
 
 test:
-  post:
+  override:
     - python setup.py nosetests
