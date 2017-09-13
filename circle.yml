@@ -2,6 +2,7 @@
 dependencies:
   pre:
     - pip install nose
+    - pip install pylons
 
 test:
   override:
