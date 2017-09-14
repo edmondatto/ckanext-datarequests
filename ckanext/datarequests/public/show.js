@@ -4,8 +4,8 @@ var down_voted = false;
 $(document).ready(function() {
   var up_vote_counter = $("#up_votes_count").text();
   var down_vote_counter = $("#down_votes_count").text();
-  var datarequest_id = $("#datarequest_id").text();
-  var user_option = $("#user_option").text();
+  var datarequest_id = document.getElementById("datarequest_vote_section").dataset.datarequestId;
+  var user_option = document.getElementById("datarequest_vote_section").dataset.userOption;
 
   $("#thumbs_up").click(function () {
     if (user_option === "True"){
@@ -15,7 +15,7 @@ $(document).ready(function() {
     if (up_voted === false) {
       // Upvote a post
       $.ajax({
-        url: "/api/action/datarequest_vote",
+        url: "/api/3/action/datarequest_vote",
         type: "post",
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify({
@@ -41,7 +41,7 @@ $(document).ready(function() {
     } else {
       // Unvote before voting again
       $.ajax({
-        url: "/api/action/datarequest_unvote",
+        url: "/api/3/action/datarequest_unvote",
         type: "post",
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify({
@@ -74,7 +74,7 @@ $(document).ready(function() {
     if (down_voted === false) {
       // Downvote
       $.ajax({
-        url: "/api/action/datarequest_vote",
+        url: "/api/3/action/datarequest_vote",
         type: "post",
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify({
@@ -100,7 +100,7 @@ $(document).ready(function() {
     } else {
       // Unvote before voting again
       $.ajax({
-        url: "/api/action/datarequest_unvote",
+        url: "/api/3/action/datarequest_unvote",
         type: "post",
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify({
