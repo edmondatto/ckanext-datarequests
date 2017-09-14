@@ -66,10 +66,8 @@
     {% snippet "datarequests/snippets/additional_info.html", datarequest=c.datarequest %}
   {% endblock %}
 
-  <div class="vote-section">
+  <div class="vote-section" id="datarequest_vote_section" data-datarequest-id="{{ c.datarequest.get('id') }}" data-user-option="{{ user_option }}">
     <hr>
-    <span id="datarequest_id" hidden>{{ c.datarequest.get('id') }}</span>
-    <span id="user_option" hidden>{{ user_option }}</span>
     {% if user_option == True %}
       <span class= "vote-section-content down_vote disabled">
         <p id="down_votes_count"> {{ down_vote_counter }} </p>
