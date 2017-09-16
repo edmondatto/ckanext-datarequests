@@ -12,7 +12,7 @@ POSTGRES_PORT=${POSTGRES_PORT:=5432}
 echo "Downloading CKAN..."
 git clone https://github.com/ckan/ckan
 cd ckan
-git checkout release-v2.5.2
+git checkout release-v2.5.3
 cd $WD
 
 
@@ -57,6 +57,10 @@ echo "Setting up virtualenv..."
 virtualenv --no-site-packages virtualenv
 source virtualenv/bin/activate
 pip install --upgrade pip
+
+
+# Force html5lib version to be used
+pip install html5lib==0.9999999
 
 
 echo "Installing CKAN dependencies..."
