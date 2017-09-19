@@ -368,6 +368,7 @@ class DataRequestsUI(base.BaseController):
                         flash_message = tk._('Comment has been updated')
 
                     helpers.flash_notice(flash_message)
+                    base.redirect(helpers.url_for(controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI', action='comment', id=id))
 
                 except tk.NotAuthorized as e:
                     log.warn(e)
