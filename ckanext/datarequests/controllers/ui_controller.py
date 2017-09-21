@@ -177,12 +177,15 @@ class DataRequestsUI(base.BaseController):
             try:
                 result = tk.get_action(action)(context, data_dict)
                 if result['id']:
+                    datarequest_url = config.get('ckan.site_url') + \
+                                      '/datarequest/' + result['id']
                     users = result['organization']['users']
                     extra_vars = {
                         'site_title': config.get('ckan.site_title'),
                         'site_url': config.get('ckan.site_url'),
                         'datarequest_title': result['title'],
                         'datarequest_description': result['description'],
+                        'datarequest_url': datarequest_url,
                     }
                     subject = base.render_jinja2('emails/notify_user_subject.txt',
                                                  extra_vars)
