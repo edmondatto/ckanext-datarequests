@@ -181,7 +181,7 @@ class DataRequestsUI(base.BaseController):
                     extra_vars = {
                         'site_title': config.get('ckan.site_title')
                     }
-                    subject = base.render_jinja2('datarequests/emails/notify_user_subject.txt',
+                    subject = base.render_jinja2('emails/notify_user_subject.txt',
                                                  extra_vars)
                     subject = subject.split('\n')[0]
                     body = "New dataset added!"
