@@ -187,10 +187,12 @@ class DataRequestsUI(base.BaseController):
                     subject = base.render_jinja2('emails/notify_user_subject.txt',
                                                  extra_vars)
                     subject = subject.split('\n')[0]
-                    body = base.render_jinja2('emails/notify_user_body.txt',
-                                              extra_vars)
+
                     for user in users:
                         user_data = model.User.get(user['id'])
+                        extra_vars['user_name'] = user_data.fullname
+                        body = base.render_jinja2('emails/notify_user_body.txt',
+                                                  extra_vars)
                         mailer.mail_user(user_data, subject, body)
                 base.redirect(helpers.url_for(controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
                                               action='show', id=result['id']))
