@@ -179,12 +179,16 @@ class DataRequestsUI(base.BaseController):
                 if result['id']:
                     users = result['organization']['users']
                     extra_vars = {
-                        'site_title': config.get('ckan.site_title')
+                        'site_title': config.get('ckan.site_title'),
+                        'site_url': config.get('ckan.site_url'),
+                        'datarequest_title': result['title'],
+                        'datarequest_description': result['description'],
                     }
                     subject = base.render_jinja2('emails/notify_user_subject.txt',
                                                  extra_vars)
                     subject = subject.split('\n')[0]
-                    body = "New dataset added!"
+                    body = base.render_jinja2('emails/notify_user_body.txt',
+                                              extra_vars)
                     for user in users:
                         user_data = model.User.get(user['id'])
                         mailer.mail_user(user_data, subject, body)
