@@ -1,0 +1,11 @@
+Dear {{ user_name }},
+
+A new data request has been added:
+
+Title: {{ datarequest_title }}
+Description: {{ datarequest_description }}
+
+Have a nice day.
+
+--
+Message sent by {{ site_title }} ({{ site_url }})
