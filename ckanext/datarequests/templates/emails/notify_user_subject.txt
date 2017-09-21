@@ -1,1 +1,1 @@
-New DataRequest - {{ site_title }}
+[{{ site_title }}] New DataRequest
