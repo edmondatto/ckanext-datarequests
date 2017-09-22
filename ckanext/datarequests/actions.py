@@ -223,8 +223,7 @@ def datarequest_show(context, data_dict):
 
     # Get the number of votes on the data request
     vote_count = _get_vote_count(context, datarequest_id)
-    data_dict['upvotes'] = vote_count['upvotes']
-    data_dict['downvotes'] = vote_count['downvotes']
+    data_dict['rating'] = vote_count['rating']
 
     # Get the user's option
     user_option = _get_user_vote(context, datarequest_id)
@@ -386,8 +385,7 @@ def datarequest_index(context, data_dict):
         
         # Get the number of votes on the data request
         vote_count = _get_vote_count(context, data_req.id)
-        data_req_dict['upvotes'] = vote_count['upvotes']
-        data_req_dict['downvotes'] = vote_count['downvotes']
+        data_req_dict['rating'] = vote_count['rating']
 
         datarequests.append(data_req_dict)
 
@@ -872,11 +870,13 @@ def _get_vote_count(context, datarequest_id):
             upvotes += 1
         elif vote.vote_option is False:
             downvotes += 1
+    rating = upvotes - downvotes
     
     response = {
         'datarequest_id': datarequest_id,
         'upvotes': upvotes,
-        'downvotes': downvotes
+        'downvotes': downvotes,
+        'rating': rating
     }
     return response
 
