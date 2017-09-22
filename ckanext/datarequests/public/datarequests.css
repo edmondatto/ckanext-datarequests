@@ -35,41 +35,32 @@
 }
 
 .vote-section-content {
+  padding-left: 5px;
+  padding-right: 5px;
+  text-align: center;
+}
+
+#datarequest_vote_section {
+  width: 5%;
   float: right;
-  padding: 5px;
 }
 
 .vote-section {
   padding: 5px;
-}
-
-.fa-thumbs-o-down:hover {
-  color: red;
-}
-
-.fa-thumbs-o-up:hover {
-  color: green;
-}
-
-#up_votes_count {
-  color: green;
-}
-
-#down_votes_count {
-  color: red;
-}
-
-.fa-thumbs-down {
-  color: red;
-}
-
-.fa-thumbs-up {
-  color: green;
+  display:inline-block;
 }
 
 .disabled {
   pointer-events: none;
   opacity: .5;
+}
+
+#datarequest_additional_info {
+  width: 90%;
+}
+
+.dataset-content {
+  width: 95%;
 }
 
 /*****************************************
