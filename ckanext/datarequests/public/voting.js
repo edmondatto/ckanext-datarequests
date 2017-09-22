@@ -23,7 +23,6 @@ $(document).ready(function() {
         }),
         success: function(result){
           // Up vote was successful
-          console.log(result);
           $("#arrow_up").css("color", "orange");
           rating ++;
           up_voted = true;
