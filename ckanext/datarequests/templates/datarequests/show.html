@@ -2,7 +2,7 @@
 
 {% block title %}Data Request {{c.datarequest.get('title', '')}}{% endblock %}
 {% set datarequest_id = c.datarequest.get('id') %}
-{% set up_vote_counter, down_vote_counter = c.datarequest.get('upvotes'), c.datarequest.get('downvotes') %}
+{% set rating = c.datarequest.get('rating') %}
 {% set user_option = c.datarequest.get('user_option') %}
 
 {% block breadcrumb_content %}
@@ -66,51 +66,4 @@
     {% snippet "datarequests/snippets/additional_info.html", datarequest=c.datarequest %}
   {% endblock %}
 
-  <div class="vote-section" id="datarequest_vote_section" data-datarequest-id="{{ c.datarequest.get('id') }}" data-user-option="{{ user_option }}">
-    <hr>
-    {% if user_option == True %}
-      <span class= "vote-section-content down_vote disabled">
-        <p id="down_votes_count"> {{ down_vote_counter }} </p>
-      </span>
-      <span class="vote-section-content down_vote disabled">
-        <i class= "fa fa-thumbs-o-down fa-lg fa-flip-horizontal" title="Down vote request" id="thumbs_down"></i>
-      </span>
-      <span class="vote-section-content up_vote">
-        <p id="up_votes_count"> {{ up_vote_counter }} </p>
-      </span>
-      <span class= "vote-section-content up_vote">
-        <i class= "fa fa-thumbs-up fa-lg" title="Up vote request" id="thumbs_up"></i>
-      </span>    
-
-    {% elif user_option == False %}
-      <span class= "vote-section-content down_vote">
-        <p id="down_votes_count"> {{ down_vote_counter }} </p>
-      </span>
-      <span class="vote-section-content down_vote">
-        <i class= "fa fa-thumbs-down fa-lg fa-flip-horizontal" title="Down vote request" id="thumbs_down"></i>
-      </span>
-      <span class="vote-section-content up_vote disabled">
-        <p id="up_votes_count"> {{ up_vote_counter }} </p>
-      </span>
-      <span class= "vote-section-content up_vote disabled">
-        <i class= "fa fa-thumbs-o-up fa-lg" title="Up vote request" id="thumbs_up"></i>
-      </span>    
-    
-    {% else %}
-      <span class= "vote-section-content down_vote">
-        <p id="down_votes_count"> {{ down_vote_counter }} </p>
-      </span>
-      <span class="vote-section-content down_vote">
-        <i class= "fa fa-thumbs-o-down fa-lg fa-flip-horizontal" title="Down vote request" id="thumbs_down"></i>
-      </span>
-      <span class="vote-section-content up_vote">
-        <p id="up_votes_count"> {{ up_vote_counter }} </p>
-      </span>
-      <span class= "vote-section-content up_vote">
-        <i class= "fa fa-thumbs-o-up fa-lg" title="Up vote request" id="thumbs_up"></i>
-      </span>
-
-    {% endif %}
-
-  </div>
 {% endblock %}
