@@ -21,6 +21,8 @@ import logging
 
 import ckan.lib.base as base
 import ckan.model as model
+from ckan.common import config
+import ckan.lib.mailer as mailer
 import ckan.plugins as plugins
 import ckan.lib.helpers as helpers
 import ckanext.datarequests.constants as constants
@@ -174,7 +176,28 @@ class DataRequestsUI(base.BaseController):
 
             try:
                 result = tk.get_action(action)(context, data_dict)
-                base.redirect(helpers.url_for(controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI', 
+                if result['id']:
+                    datarequest_url = config.get('ckan.site_url') + \
+                                      '/datarequest/' + result['id']
+                    users = result['organization']['users']
+                    extra_vars = {
+                        'site_title': config.get('ckan.site_title'),
+                        'site_url': config.get('ckan.site_url'),
+                        'datarequest_title': result['title'],
+                        'datarequest_description': result['description'],
+                        'datarequest_url': datarequest_url,
+                    }
+                    subject = base.render_jinja2('emails/notify_user_subject.txt',
+                                                 extra_vars)
+                    subject = subject.split('\n')[0]
+
+                    for user in users:
+                        user_data = model.User.get(user['id'])
+                        extra_vars['user_name'] = user_data.fullname
+                        body = base.render_jinja2('emails/notify_user_body.txt',
+                                                  extra_vars)
+                        mailer.mail_user(user_data, subject, body)
+                base.redirect(helpers.url_for(controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
                                               action='show', id=result['id']))
 
             except tk.ValidationError as e:
@@ -264,7 +287,7 @@ class DataRequestsUI(base.BaseController):
             log.warn(e)
             tk.abort(404, tk._('Data Request %s not found') % id)
         except tk.NotAuthorized as e:
-            log.warn(e) 
+            log.warn(e)
             tk.abort(403, tk._('You are not authorized to delete the Data Request %s'
                                % id))
 
