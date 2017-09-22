@@ -2,12 +2,11 @@ var up_voted = false;
 var down_voted = false;
 
 $(document).ready(function() {
-  var up_vote_counter = $("#up_votes_count").text();
-  var down_vote_counter = $("#down_votes_count").text();
+  var rating = $("#rating").text();
   var datarequest_id = document.getElementById("datarequest_vote_section").dataset.datarequestId;
   var user_option = document.getElementById("datarequest_vote_section").dataset.userOption;
 
-  $("#thumbs_up").click(function () {
+  $("#arrow_up").click(function () {
     if (user_option === "True"){
       up_voted = true;
     } 
@@ -24,13 +23,14 @@ $(document).ready(function() {
         }),
         success: function(result){
           // Up vote was successful
-          $('#thumbs_up').toggleClass('fa-thumbs-up fa-thumbs-o-up');
-          up_vote_counter ++;
+          console.log(result);
+          $("#arrow_up").css("color", "orange");
+          rating ++;
           up_voted = true;
           user_option = "True";
-          $("#up_votes_count").text(up_vote_counter);
+          $("#rating").text(rating);
           $("#user_option").text("True");
-          $('.down_vote').addClass('disabled');
+          $('#arrow_down').addClass('disabled');
         },
         error: function(result){
           // Error voting
@@ -49,13 +49,13 @@ $(document).ready(function() {
         }),
         success: function(result){
           // Successfully unvoting
-          $('#thumbs_up').toggleClass('fa-thumbs-o-up fa-thumbs-up');
-          up_vote_counter --;
+          $("#arrow_up").css("color", "");
+          rating --;
           user_option = "None";
           up_voted = false;
-          $("#up_votes_count").text(up_vote_counter);
+          $("#rating").text(rating);
           $("#user_option").text("None");
-          $('.down_vote').removeClass('disabled');
+          $('#arrow_down').removeClass('disabled');
         },
         error: function(result){
           // Error unvoting
@@ -66,7 +66,7 @@ $(document).ready(function() {
     }
   });
   
-  $("#thumbs_down").click(function () {
+  $("#arrow_down").click(function () {
     if (user_option === "False"){
       down_voted = true;
     } 
@@ -83,13 +83,13 @@ $(document).ready(function() {
         }),
         success: function(result){
           // Down vote successfully
-          $('#thumbs_down').toggleClass('fa-thumbs-down fa-thumbs-o-down');
-          down_vote_counter ++;
+          $("#arrow_down").css("color", "orange");
+          rating --;
           user_option = "False";
           down_voted = true;
-          $("#down_votes_count").text(down_vote_counter);
+          $("#rating").text(rating);
           $("#user_option").text("False");
-          $('.up_vote').addClass('disabled');
+          $('#arrow_up').addClass('disabled');
         },
         error: function(result){
           // Error voting
@@ -108,13 +108,13 @@ $(document).ready(function() {
         }),
         success: function(result){
           // Successfully unvoting
-          $('#thumbs_down').toggleClass('fa-thumbs-o-down fa-thumbs-down');
-          down_vote_counter --;
+          $("#arrow_down").css("color", "");
+          rating ++;
           down_voted = false;
           user_option = "None";
-          $("#down_votes_count").text(down_vote_counter);
+          $("#rating").text(rating);
           $("#user_option").text("None");
-          $('.up_vote').removeClass('disabled');
+          $('#arrow_up').removeClass('disabled');
         },
         error: function(result){
           // Error unvoting
