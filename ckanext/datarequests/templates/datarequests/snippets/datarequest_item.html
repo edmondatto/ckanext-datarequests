@@ -9,17 +9,10 @@
     <!-- Votes section -->
     <div id="datarequest_vote_section" data-datarequest-id="{{ datarequest.id }}">
         <div id="datarequest_id" hidden>{{ datarequest.id }}</div>
-  
-        <div class= "vote-section-content up_vote">
-          <i class= "icon-caret-up icon-2x" title="Up vote request"></i>
-        </div>
-  
-        <div class="vote-section-content rating" style="width: 30px">
-          <div class="vote-section-content rating"> {{ datarequest.rating }} </div>
-        </div>
-  
-        <div class="vote-section-content down_vote">
-          <i class= "icon-caret-down icon-2x" title="Down vote request"></i>
+
+        <div class="vote-section-content rating-list">
+          <div class="vote-section-content"> {{ datarequest.rating }} </div>
+          <div> votes </div>
         </div>
   
       </div>
