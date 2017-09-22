@@ -50,6 +50,11 @@
   display:inline-block;
 }
 
+.rating-list {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
 .disabled {
   pointer-events: none;
   opacity: .5;
