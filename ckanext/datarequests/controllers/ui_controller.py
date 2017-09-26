@@ -174,8 +174,8 @@ class DataRequestsUI(base.BaseController):
 
             try:
                 result = tk.get_action(action)(context, data_dict)
-                base.redirect(helpers.url_for(controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                                              action='show', id=result['id']))
+                tk.redirect_to(helpers.url_for(controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
+                               action='show', id=result['id']))
 
             except tk.ValidationError as e:
                 log.warn(e)
