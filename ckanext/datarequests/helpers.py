@@ -20,6 +20,7 @@
 import ckan.model as model
 import ckan.plugins.toolkit as tk
 import db
+from pylons import config
 
 
 def get_comments_number(datarequest_id):
@@ -31,6 +32,10 @@ def get_comments_number(datarequest_id):
 def get_comments_badge(datarequest_id):
     return tk.render_snippet('datarequests/snippets/badge.html',
                              {'comments_count': get_comments_number(datarequest_id)})
+
+
+def get_default_organization():
+    return config.get('ckanext.orgportals.default_organization', 'default')
 
 
 def get_open_datarequests_number():
