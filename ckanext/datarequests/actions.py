@@ -18,13 +18,17 @@
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
 
+import cgi
+import datetime
+import logging
+
+import ckan.logic.action.create as create_core
 import ckan.plugins as plugins
 import constants
-import datetime
-import cgi
 import db
-import logging
+import helpers
 import validator
+from ckan.plugins import toolkit as tk
 
 c = plugins.toolkit.c
 log = logging.getLogger(__name__)
@@ -77,17 +81,23 @@ def _dictize_datarequest(datarequest):
         'title': datarequest.title,
         'description': datarequest.description,
         'organization_id': datarequest.organization_id,
+        'default_organization_id': datarequest.default_organization_id,
         'open_time': open_time,
         'accepted_dataset_id': datarequest.accepted_dataset_id,
         'close_time': close_time,
         'closed': datarequest.closed,
         'user': _get_user(datarequest.user_id),
         'organization': None,
+        'default_organization': None,
         'accepted_dataset': None
     }
 
     if datarequest.organization_id:
         data_dict['organization'] = _get_organization(datarequest.organization_id)
+
+    if datarequest.default_organization_id:
+        data_dict['default_organization'] = _get_organization(datarequest.default_organization_id)
+
 
     if datarequest.accepted_dataset_id:
         data_dict['accepted_dataset'] = _get_package(datarequest.accepted_dataset_id)
@@ -117,6 +127,17 @@ def _dictize_comment(comment):
 def _undictize_comment_basic(comment, data_dict):
     comment.comment = cgi.escape(data_dict.get('comment', ''))
     comment.datarequest_id = data_dict.get('datarequest_id', '')
+
+
+def organization_create(context, data_dict):
+    name = helpers.get_default_organization()
+    try:
+        data_dict.update({'name': name})
+        org = create_core.organization_create(context, data_dict)
+
+        return org
+    except plugins.toolkit.ValidationError:
+        return create_core.organization_create(context, data_dict)
 
 
 def datarequest_create(context, data_dict):
@@ -150,6 +171,15 @@ def datarequest_create(context, data_dict):
     # Init the data base
     db.init_db(model)
 
+    org = helpers.get_default_organization()
+
+    list_of_orgs = tk.get_action('organization_list')({'ignore_auth': True}, {})
+
+    if org not in list_of_orgs:
+        organization_create({'ignore_auth': True}, {'name': org})
+
+    org_id = tk.get_action('organization_show')({'ignore_auth': True}, {'id': org})
+
     # Check access
     tk.check_access(constants.DATAREQUEST_CREATE, context, data_dict)
 
@@ -160,6 +190,7 @@ def datarequest_create(context, data_dict):
     data_req = db.DataRequest()
     _undictize_datarequest_basic(data_req, data_dict)
     data_req.user_id = context['auth_user_obj'].id
+    data_req.default_organization_id = org_id['id']
     data_req.open_time = datetime.datetime.now()
 
     session.add(data_req)
