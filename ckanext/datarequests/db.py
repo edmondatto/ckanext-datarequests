@@ -17,10 +17,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
-import constants
-import sqlalchemy as sa
 import uuid
 
+import constants
+import sqlalchemy as sa
 from sqlalchemy import func
 from sqlalchemy.sql.expression import or_
 
@@ -91,6 +91,7 @@ def init_db(model):
             sa.Column('title', sa.types.Unicode(constants.NAME_MAX_LENGTH), primary_key=True, default=u''),
             sa.Column('description', sa.types.Unicode(constants.DESCRIPTION_MAX_LENGTH), primary_key=False, default=u''),
             sa.Column('organization_id', sa.types.UnicodeText, primary_key=False, default=None),
+            sa.Column('default_organization_id', sa.types.UnicodeText, primary_key=False, default=None),
             sa.Column('open_time', sa.types.DateTime, primary_key=False, default=None),
             sa.Column('accepted_dataset_id', sa.types.UnicodeText, primary_key=False, default=None),
             sa.Column('close_time', sa.types.DateTime, primary_key=False, default=None),
