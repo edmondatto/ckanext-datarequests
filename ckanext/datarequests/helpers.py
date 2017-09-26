@@ -35,7 +35,7 @@ def get_comments_badge(datarequest_id):
 
 
 def get_default_organization():
-    return config.get('ckanext.orgportals.default_organization', 'default')
+    return config.get('ckanext.datarequests.default_organization', 'default')
 
 
 def get_open_datarequests_number():
