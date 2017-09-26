@@ -26,6 +26,7 @@ from sqlalchemy.sql.expression import or_
 
 DataRequest = None
 Comment = None
+Vote = None
 
 
 def uuid4():
@@ -36,6 +37,7 @@ def init_db(model):
 
     global DataRequest
     global Comment
+    global Vote
 
     if DataRequest is None:
 
@@ -141,3 +143,33 @@ def init_db(model):
         comments_table.create(checkfirst=True)
 
         model.meta.mapper(Comment, comments_table,)
+
+
+    if Vote is None:
+        class _Vote(model.DomainObject):
+
+            @classmethod
+            def get(cls, **kw):
+                '''Finds all the instances required.'''
+                query = model.Session.query(cls).autoflush(False)
+                return query.filter_by(**kw).all()
+
+            @classmethod
+            def get_datarequest_comments_number(cls, **kw):
+                '''
+                Returned the number of votes of a data request
+                '''
+                return model.Session.query(func.count(cls.id)).filter_by(**kw).scalar()
+
+        Vote = _Vote
+        votes_table = sa.Table('datarequests_votes', model.meta.metadata,
+            sa.Column('id', sa.types.UnicodeText, primary_key=True, default=uuid4),
+            sa.Column('user_id', sa.types.UnicodeText, primary_key=False, default=u''),
+            sa.Column('datarequest_id', sa.types.UnicodeText, primary_key=False, default=uuid4),
+            sa.Column('vote_option', sa.types.Boolean, primary_key=False)
+            )
+
+        # Create the table only if it does not exist
+        votes_table.create(checkfirst=True)
+
+        model.meta.mapper(Vote, votes_table,)

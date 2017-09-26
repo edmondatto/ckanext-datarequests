@@ -1,8 +1,9 @@
 {% extends "datarequests/base.html" %}
 
 {% block title %}Data Request {{c.datarequest.get('title', '')}}{% endblock %}
-
 {% set datarequest_id = c.datarequest.get('id') %}
+{% set rating = c.datarequest.get('rating') %}
+{% set user_option = c.datarequest.get('user_option') %}
 
 {% block breadcrumb_content %}
   <li>{% link_for _('Data Requests'), controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI', action='index' %}</li>

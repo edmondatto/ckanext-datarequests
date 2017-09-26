@@ -80,7 +80,9 @@ class DataRequestsPlugin(p.SingletonPlugin):
             constants.DATAREQUEST_UPDATE: actions.datarequest_update,
             constants.DATAREQUEST_INDEX: actions.datarequest_index,
             constants.DATAREQUEST_DELETE: actions.datarequest_delete,
-            constants.DATAREQUEST_CLOSE: actions.datarequest_close
+            constants.DATAREQUEST_CLOSE: actions.datarequest_close,
+            constants.DATAREQUEST_VOTE: actions.datarequest_vote,
+            constants.DATAREQUEST_UNVOTE: actions.datarequest_unvote
         }
 
         if self.comments_enabled:
@@ -89,6 +91,8 @@ class DataRequestsPlugin(p.SingletonPlugin):
             additional_actions[constants.DATAREQUEST_COMMENT_SHOW] = actions.datarequest_comment_show
             additional_actions[constants.DATAREQUEST_COMMENT_UPDATE] = actions.datarequest_comment_update
             additional_actions[constants.DATAREQUEST_COMMENT_DELETE] = actions.datarequest_comment_delete
+            additional_actions[constants.DATAREQUEST_VOTE] = actions.datarequest_vote
+            additional_actions[constants.DATAREQUEST_UNVOTE] = actions.datarequest_unvote
 
         return additional_actions
 
@@ -104,6 +108,8 @@ class DataRequestsPlugin(p.SingletonPlugin):
             constants.DATAREQUEST_INDEX: auth.datarequest_index,
             constants.DATAREQUEST_DELETE: auth.datarequest_delete,
             constants.DATAREQUEST_CLOSE: auth.datarequest_close,
+            constants.DATAREQUEST_VOTE: actions.datarequest_vote,
+            constants.DATAREQUEST_UNVOTE: actions.datarequest_unvote
         }
 
         if self.comments_enabled:
@@ -112,6 +118,8 @@ class DataRequestsPlugin(p.SingletonPlugin):
             auth_functions[constants.DATAREQUEST_COMMENT_SHOW] = auth.datarequest_comment_show
             auth_functions[constants.DATAREQUEST_COMMENT_UPDATE] = auth.datarequest_comment_update
             auth_functions[constants.DATAREQUEST_COMMENT_DELETE] = auth.datarequest_comment_delete
+            auth_functions[constants.DATAREQUEST_VOTE] = auth.datarequest_vote
+            auth_functions[constants.DATAREQUEST_UNVOTE] = auth.datarequest_unvote
 
         return auth_functions
 
