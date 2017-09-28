@@ -1,16 +1,17 @@
-import sys
-from ckan.lib.cli import CkanCommand
-import ckan.logic as logic
-import ..db
 import datetime
+import sys
+
+import ckan.logic as logic
+import ckanext.datarequests.db as db
+from ckan.lib.cli import CkanCommand
 
 
 class DefaultOrganization(CkanCommand):
     '''Creates a default datarequest organization all datarequests
 
      Usage:
-        organization add NAME                              - create a default data request organization associated with
-                                                           all data requests
+        organization add NAME                 - create a default data request organization associated with
+                                                all data requests
      '''
     summary = __doc__.split('\n')[0]
     usage = __doc__
@@ -22,7 +23,7 @@ class DefaultOrganization(CkanCommand):
 
         cmd = self.args[0]
         if cmd == 'set_default':
-            self.add()
+            self.set_default()
 
     def set_default(self):
         import ckan.model as model
@@ -34,12 +35,20 @@ class DefaultOrganization(CkanCommand):
 
         # parse args into the data_dict
         data_dict = {'name': default_organization_name}
+        site_user = logic.get_action('get_site_user')({'model': model, 'ignore_auth': True}, {})
+        context = {
+            'model': model,
+            'session': model.Session,
+            'ignore_auth': True,
+            'user': site_user['name'],
+        }
+        print site_user['name']
+        print site_user['apikey']
 
         print('Creating organization: {}...\n'.format(default_organization_name))
 
-        organization_exists = logic.get_action('organization_show')(context, data_dict)
-
-        if organization_exists:
+        try:
+            organization_exists = logic.get_action('organization_show')(context, {'id': default_organization_name})
             db.init_db(model)
             default_org = db.DefaultOrganization()
             default_org.organization_id = organization_exists['id']
@@ -47,25 +56,26 @@ class DefaultOrganization(CkanCommand):
             default_org.open_time = datetime.datetime.now()
             model.Session.add(default_org)
             model.Session.commit()
-        else:
+            print organization_exists
+        except logic.NotFound:
             try:
-            site_user = logic.get_action('get_site_user')({'model': model, 'ignore_auth': True}, {})
-            context = {
-                'model': model,
-                'session': model.Session,
-                'ignore_auth': True,
-                'user': site_user['name'],
-            }
+                # site_user = logic.get_action('get_site_user')({'model': model, 'ignore_auth': True}, {})
+                # context = {
+                #     'model': model,
+                #     'session': model.Session,
+                #     'ignore_auth': True,
+                #     'user': site_user['name'],
+                # }
 
-            default_organization_dict =  logic.get_action('organization_create')(context, data_dict)
-            db.init_db(model)
-            default_org = db.DefaultOrganization()
-            default_org.organization_id = default_organization_dict['id']
-            default_org.organization_name = default_organization_dict['name']
-            default_org.open_time = datetime.datetime.now()
-            model.Session.add(default_org)
-            model.Session.commit()
-            print(default_organization_dict)
+                default_organization_dict = logic.get_action('organization_create')(context, data_dict)
+                db.init_db(model)
+                default_org = db.DefaultOrganization()
+                default_org.organization_id = default_organization_dict['id']
+                default_org.organization_name = default_organization_dict['name']
+                default_org.open_time = datetime.datetime.now()
+                model.Session.add(default_org)
+                model.Session.commit()
+                print(default_organization_dict)
 
             except logic.ValidationError, e:
                 print(e)
