@@ -26,6 +26,7 @@ from sqlalchemy.sql.expression import or_
 
 DataRequest = None
 Comment = None
+DefaultOrganization = None
 
 
 def uuid4():
