@@ -36,6 +36,30 @@ def init_db(model):
 
     global DataRequest
     global Comment
+    global DefaultOrganization
+
+    if DefaultOrganization is None:
+        class _DefaultOrganization(model.DomainObject):
+
+            @classmethod
+            def get_default_org(cls, **kw):
+                '''Finds all the instances required'''
+                query = model.Session.query(cls).autoflush(False)
+                return query.filter_by(**kw).order_by(cls.open_time.desc()).first()
+
+        DefaultOrganization = _DefaultOrganization
+
+        default_organization_table = sa.Table('defaultorganization', model.meta.metadata,
+              sa.Column('organization_id', sa.types.UnicodeText, primary_key=True, default=None),
+              sa.Column('organization_name', sa.types.Unicode(constants.NAME_MAX_LENGTH), primary_key=False),
+              sa.Column('open_time', sa.types.DateTime, primary_key=False, default=None),
+              )
+
+        # Create the table only if does not exist
+        default_organization_table.create(checkfirst=True)
+
+        model.meta.mapper(DefaultOrganization, default_organization_table)
+
 
     if DataRequest is None:
 
