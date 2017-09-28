@@ -57,6 +57,9 @@ setup(
 
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan
+        
+        [paste.paster_command]
+        organization = ckanext.datarequests.command.organization:DefaultOrganization
     ''',
     message_extractors={
         'ckanext': [
