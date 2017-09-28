@@ -59,13 +59,13 @@ class DefaultOrganization(CkanCommand):
             print organization_exists
         except logic.NotFound:
             try:
-                # site_user = logic.get_action('get_site_user')({'model': model, 'ignore_auth': True}, {})
-                # context = {
-                #     'model': model,
-                #     'session': model.Session,
-                #     'ignore_auth': True,
-                #     'user': site_user['name'],
-                # }
+                site_user = logic.get_action('get_site_user')({'model': model, 'ignore_auth': True}, {})
+                context = {
+                    'model': model,
+                    'session': model.Session,
+                    'ignore_auth': True,
+                    'user': site_user['name'],
+                }
 
                 default_organization_dict = logic.get_action('organization_create')(context, data_dict)
                 db.init_db(model)
