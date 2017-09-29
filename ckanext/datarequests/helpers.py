@@ -34,10 +34,6 @@ def get_comments_badge(datarequest_id):
                              {'comments_count': get_comments_number(datarequest_id)})
 
 
-def get_default_organization():
-    return config.get('ckanext.datarequests.default_organization', 'default')
-
-
 def get_open_datarequests_number():
     # DB should be initialized
     db.init_db(model)
