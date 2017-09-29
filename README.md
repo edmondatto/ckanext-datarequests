@@ -193,6 +193,29 @@ sudo service apache2 restart
 ```
 * That's All!
 
+Creating a default data requests organization
+---------------------------------------------
+A default data requests organization receives all data requests made on your CKAN instance by default, giving you the ability to
+act on data request where you capacity allows.
+
+Create a default data requests organization by running the command below. 
+```commandline
+paster --plugin=ckan organization set_default [YOUR_ORGANIZATION_NAME] --config=/etc/ckan/default/production.ini
+``` 
+**NOTE:** Ensure that you are not logged into your CKAN instance before you run the paster command!
+
+You will receive credentials (Username and Password) for the default user who owns the default organization
+enabling you to add other members of your organization to the default organization.
+
+By default, the CKAN default user is called *default*. To customise the default user's username,
+specify this in the production.ini before setting up your CKAN instance.
+```ini
+ckan.site_id = DEFAULT_USER_NAME_HERE
+```
+
+You can also specify an already existing organization in the paster commmand to have it 
+set as the default data requests organization.
+
 Translations
 ------------
 Help us to translate this extension so everyone can create data requests. Currently, the extension is translated to English and Spanish. If you want to contribute with your translation, the first step is to close this repo. Then, create the locale for your translation by executing:
