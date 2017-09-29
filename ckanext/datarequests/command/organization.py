@@ -4,6 +4,7 @@ import sys
 import ckan.logic as logic
 import ckanext.datarequests.db as db
 from ckan.lib.cli import CkanCommand
+from ckan.model.user import User
 
 
 class DefaultOrganization(CkanCommand):
@@ -42,8 +43,6 @@ class DefaultOrganization(CkanCommand):
             'ignore_auth': True,
             'user': site_user['name'],
         }
-        print site_user['name']
-        print site_user['apikey']
 
         print('Creating organization: {}...\n'.format(default_organization_name))
 
@@ -75,7 +74,15 @@ class DefaultOrganization(CkanCommand):
                 default_org.open_time = datetime.datetime.now()
                 model.Session.add(default_org)
                 model.Session.commit()
-                print(default_organization_dict)
+
+                print '\nAn organization called {} has been created successfully.'.format(default_organization_name)
+                print '\nUse the credentials below to login as the default user and manage the default organization'
+                print 'Username: {}'.format(site_user['name'])
+                print 'Password: {}\n'.format(site_user['apikey'])
+
+                rows = model.Session.query(db.DefaultOrganization).count()
+                if rows > 1:
+                    print 'Note: If you have already changed this password, disregard the one above and use that instead.\n'
 
             except logic.ValidationError, e:
                 print(e)
