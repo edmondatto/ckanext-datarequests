@@ -48,6 +48,12 @@ def init_db(model):
                 query = model.Session.query(cls).autoflush(False)
                 return query.filter_by(**kw).order_by(cls.open_time.desc()).first()
 
+            @classmethod
+            def delete_all(cls, **kw):
+                '''Finds all the instances required'''
+                model.Session.query(cls).delete()
+                model.Session.commit()
+
         DefaultOrganization = _DefaultOrganization
 
         default_organization_table = sa.Table('defaultorganization', model.meta.metadata,
