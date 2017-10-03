@@ -44,7 +44,11 @@ class DefaultOrganization(CkanCommand):
             'user': site_user['name'],
         }
 
-        print('Creating organization: {}...\n'.format(default_organization_name))
+        print 'Setting as default, Organization: {}...\n'.format(default_organization_name)
+        print '\nUse the credentials below to login as the default user and manage the default organization'
+        print 'Username: {}'.format(site_user['name'])
+        print 'Password: {}\n'.format(site_user['apikey'])
+        print '\nNote: If you have already changed this password, disregard the one above and use that instead.\n'
 
         try:
             organization_exists = logic.get_action('organization_show')(context, {'id': default_organization_name})
@@ -53,9 +57,10 @@ class DefaultOrganization(CkanCommand):
             default_org.organization_id = organization_exists['id']
             default_org.organization_name = organization_exists['name']
             default_org.open_time = datetime.datetime.now()
+            db.DefaultOrganization.delete_all()
             model.Session.add(default_org)
             model.Session.commit()
-            print organization_exists
+
         except logic.NotFound:
             try:
                 site_user = logic.get_action('get_site_user')({'model': model, 'ignore_auth': True}, {})
@@ -72,17 +77,11 @@ class DefaultOrganization(CkanCommand):
                 default_org.organization_id = default_organization_dict['id']
                 default_org.organization_name = default_organization_dict['name']
                 default_org.open_time = datetime.datetime.now()
+                db.DefaultOrganization.delete_all()
                 model.Session.add(default_org)
                 model.Session.commit()
 
                 print '\nAn organization called {} has been created successfully.'.format(default_organization_name)
-                print '\nUse the credentials below to login as the default user and manage the default organization'
-                print 'Username: {}'.format(site_user['name'])
-                print 'Password: {}\n'.format(site_user['apikey'])
-
-                rows = model.Session.query(db.DefaultOrganization).count()
-                if rows > 1:
-                    print 'Note: If you have already changed this password, disregard the one above and use that instead.\n'
 
             except logic.ValidationError, e:
                 print(e)
