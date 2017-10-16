@@ -17,8 +17,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
-from setuptools import setup, find_packages
-import sys, os
+import os
+import sys
+
+from setuptools import find_packages, setup
 
 version = '0.3.2'
 
@@ -27,7 +29,7 @@ setup(
     version=version,
     description="CKAN Extension - Data Requests",
     long_description='''
-    CKAN extension that allows users to ask for datasets that are not already published in the CKAN instance. 
+    CKAN extension that allows users to ask for datasets that are not already published in the CKAN instance.
     In this way we can set up a Data Market, not only with data supplies but also with data demands.
     ''',
     classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -46,7 +48,7 @@ setup(
         # -*- Extra requirements: -*-
     ],
     tests_require=[
-        'nose_parameterized==0.3.3',
+        'nose_parameterized==0.6.0',
         'selenium==2.53'
     ],
     test_suite='nosetests',
@@ -57,7 +59,7 @@ setup(
 
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan
-        
+
         [paste.paster_command]
         organization = ckanext.datarequests.command.organization:DefaultOrganization
     ''',
