@@ -1,8 +1,9 @@
 {% extends "datarequests/base.html" %}
 
 {% block title %}Data Request {{c.datarequest.get('title', '')}}{% endblock %}
-
 {% set datarequest_id = c.datarequest.get('id') %}
+{% set rating = c.datarequest.get('rating') %}
+{% set user_option = c.datarequest.get('user_option') %}
 
 {% block breadcrumb_content %}
   <li>{% link_for _('Data Requests'), controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI', action='index' %}</li>
@@ -41,12 +42,12 @@
 {% block primary_content_inner %}
     {% if c.datarequest.closed %}
       <span class="uppercase label label-closed pull-right">
-        <i class="icon-lock"></i>
+        <i class="icon-lock fa fa-lock"></i>
         {{ _('Closed') }}
       </span>
     {% else %}
       <span class="uppercase label label-open pull-right">
-        <i class="icon-unlock"></i>
+        <i class="icon-unlock fa fa-unlock"></i>
         {{ _('Open') }}
       </span>
     {% endif %}

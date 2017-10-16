@@ -22,7 +22,7 @@ import sys
 
 from setuptools import find_packages, setup
 
-version = '0.3.2'
+version = '0.4.1'
 
 setup(
     name='ckanext-datarequests',
@@ -50,6 +50,7 @@ setup(
     tests_require=[
         'nose_parameterized==0.6.0',
         'selenium==2.53'
+        'coveralls==1.1'
     ],
     test_suite='nosetests',
     entry_points='''

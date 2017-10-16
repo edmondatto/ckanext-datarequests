@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with CKAN Data Requests Extension. If not, see <http://www.gnu.org/licenses/>.
 
+import ckan.lib.helpers as h
 import ckan.plugins as p
 import ckan.plugins.toolkit as tk
 import auth
@@ -34,6 +35,19 @@ def get_config_bool_value(config_name, default_value=False):
     value = config.get(config_name, default_value)
     value = value if type(value) == bool else value != 'False'
     return value
+
+def is_fontawesome_4():
+    if hasattr(h, 'ckan_version'):
+        ckan_version = float(h.ckan_version()[0:3])
+        return ckan_version >= 2.7
+    else:
+        return False
+
+def get_plus_icon():
+    return 'plus-square' if is_fontawesome_4() else 'plus-sign-alt'
+
+def get_question_icon():
+    return 'question-circle' if is_fontawesome_4() else 'question-sign'
 
 
 class DataRequestsPlugin(p.SingletonPlugin):
@@ -66,7 +80,9 @@ class DataRequestsPlugin(p.SingletonPlugin):
             constants.DATAREQUEST_UPDATE: actions.datarequest_update,
             constants.DATAREQUEST_INDEX: actions.datarequest_index,
             constants.DATAREQUEST_DELETE: actions.datarequest_delete,
-            constants.DATAREQUEST_CLOSE: actions.datarequest_close
+            constants.DATAREQUEST_CLOSE: actions.datarequest_close,
+            constants.DATAREQUEST_VOTE: actions.datarequest_vote,
+            constants.DATAREQUEST_UNVOTE: actions.datarequest_unvote
         }
 
         if self.comments_enabled:
@@ -75,6 +91,8 @@ class DataRequestsPlugin(p.SingletonPlugin):
             additional_actions[constants.DATAREQUEST_COMMENT_SHOW] = actions.datarequest_comment_show
             additional_actions[constants.DATAREQUEST_COMMENT_UPDATE] = actions.datarequest_comment_update
             additional_actions[constants.DATAREQUEST_COMMENT_DELETE] = actions.datarequest_comment_delete
+            additional_actions[constants.DATAREQUEST_VOTE] = actions.datarequest_vote
+            additional_actions[constants.DATAREQUEST_UNVOTE] = actions.datarequest_unvote
 
         return additional_actions
 
@@ -90,6 +108,8 @@ class DataRequestsPlugin(p.SingletonPlugin):
             constants.DATAREQUEST_INDEX: auth.datarequest_index,
             constants.DATAREQUEST_DELETE: auth.datarequest_delete,
             constants.DATAREQUEST_CLOSE: auth.datarequest_close,
+            constants.DATAREQUEST_VOTE: actions.datarequest_vote,
+            constants.DATAREQUEST_UNVOTE: actions.datarequest_unvote
         }
 
         if self.comments_enabled:
@@ -98,6 +118,8 @@ class DataRequestsPlugin(p.SingletonPlugin):
             auth_functions[constants.DATAREQUEST_COMMENT_SHOW] = auth.datarequest_comment_show
             auth_functions[constants.DATAREQUEST_COMMENT_UPDATE] = auth.datarequest_comment_update
             auth_functions[constants.DATAREQUEST_COMMENT_DELETE] = auth.datarequest_comment_delete
+            auth_functions[constants.DATAREQUEST_VOTE] = auth.datarequest_vote
+            auth_functions[constants.DATAREQUEST_UNVOTE] = auth.datarequest_unvote
 
         return auth_functions
 
@@ -134,7 +156,7 @@ class DataRequestsPlugin(p.SingletonPlugin):
         # Show a Data Request
         m.connect('datarequest_show', '/%s/{id}' % constants.DATAREQUESTS_MAIN_PATH,
                   controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
-                  action='show', conditions=dict(method=['GET']), ckan_icon='question-sign')
+                  action='show', conditions=dict(method=['GET']), ckan_icon=get_question_icon())
 
         # Update a Data Request
         m.connect('/%s/edit/{id}' % constants.DATAREQUESTS_MAIN_PATH,
@@ -155,13 +177,13 @@ class DataRequestsPlugin(p.SingletonPlugin):
         m.connect('organization_datarequests', '/organization/%s/{id}' % constants.DATAREQUESTS_MAIN_PATH,
                   controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
                   action='organization_datarequests', conditions=dict(method=['GET']),
-                  ckan_icon='question-sign')
+                  ckan_icon=get_question_icon())
 
         # Data Request that belongs to an user
         m.connect('user_datarequests', '/user/%s/{id}' % constants.DATAREQUESTS_MAIN_PATH,
                   controller='ckanext.datarequests.controllers.ui_controller:DataRequestsUI',
                   action='user_datarequests', conditions=dict(method=['GET']),
-                  ckan_icon='question-sign')
+                  ckan_icon=get_question_icon())
 
         if self.comments_enabled:
             # Comment, update and view comments (of) a Data Request
@@ -186,7 +208,8 @@ class DataRequestsPlugin(p.SingletonPlugin):
             'get_comments_number': helpers.get_comments_number,
             'get_comments_badge': helpers.get_comments_badge,
             'get_open_datarequests_number': helpers.get_open_datarequests_number,
-            'get_open_datarequests_badge': partial(helpers.get_open_datarequests_badge, self._show_datarequests_badge)
+            'get_open_datarequests_badge': partial(helpers.get_open_datarequests_badge, self._show_datarequests_badge),
+            'get_plus_icon': get_plus_icon
         }
 
     ######################################################################
